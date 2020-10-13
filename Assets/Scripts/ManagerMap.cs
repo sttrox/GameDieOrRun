@@ -1,5 +1,6 @@
 ﻿using System.Drawing;
 using UnityEngine;
+using Color = UnityEngine.Color;
 
 public class ManagerMap : MonoBehaviour
 {
@@ -20,12 +21,28 @@ public class ManagerMap : MonoBehaviour
     private int sizeX = 10;
     private int sizeY = 10;
 
-    // Start is called before the first frame update
+    private readonly Color[] _paletteColor = new Color[]
+    {
+        CreateColor(235, 52, 52), //red
+        CreateColor(235, 122, 52), //orange
+        CreateColor(235, 220, 52), //yellow
+        CreateColor(140, 235, 52), //green?
+        CreateColor(52, 235, 67), //green??
+        CreateColor(52, 235, 180), //aqua
+        CreateColor(52, 192, 235), //blue
+        CreateColor(180, 52, 235), //purple 
+        CreateColor(235, 52, 98), //oh, my eyes!
+    };
+
+    private static Color CreateColor(int r, int g, int b)
+        => new Color(255f / r, 255f / g, 255f / b);
+
+// Start is called before the first frame update
     void Start()
     {
         var bounds = PrefabHexagon.GetComponent<Renderer>().bounds;
         _sizeHexagon = new SizeF(bounds.size.x, bounds.size.z);
-        
+
         for (int i = 0; i < countLevels; i++)
         {
             GenerateStorey(i, sizeX, sizeY, Map);
@@ -70,11 +87,19 @@ public class ManagerMap : MonoBehaviour
         //вычисляем конечное положение y(z) поменяв знак на отрицательный для построения этажей вниз 
         var y = -(level * _heightFloor);
         //Инициализация ячекйи
-        var cell = Instantiate(prefab, new Vector3(posX, y , posY), Quaternion.identity);
+        var cell = FactoryMethodCreateCell(prefab, new Vector3(posX, y, posY), level);
         //для отладки
 #if DEBUG
         cell.name = "X" + indexX + "Y" + indexY;
 #endif
         cell.transform.parent = levelObject.transform;
+    }
+
+    private GameObject FactoryMethodCreateCell(GameObject prefab, Vector3 vector3, int level)
+    {
+        var instance = Instantiate(prefab, vector3, Quaternion.identity);
+        var colorController = prefab.GetComponent<ControllerColor>();
+        colorController.baseColor = _paletteColor[level];
+        return instance;
     }
 }

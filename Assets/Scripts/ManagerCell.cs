@@ -37,13 +37,13 @@ public class ManagerCell : Singleton<ManagerCell>
         for (;;)
         {
             ActivateCellFrom(_queueDestroyCell);
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitUntil(() => _queueDestroyCell.Count < 1);
         }
     }
 
     private void ActivateCellFrom(Queue<GameObject> queueCells)
     {
-        if (queueCells.Count > 0)
+        while (queueCells.Count > 0)
         {
             Cell cell = null;
             var go = queueCells.Dequeue();

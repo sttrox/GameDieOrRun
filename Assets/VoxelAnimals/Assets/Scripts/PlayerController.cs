@@ -32,18 +32,7 @@ public class PlayerController : MonoBehaviour
             //characterController.detectCollisions;
         }
     }
-    IEnumerator ProcessingWalking()
-    {
 
-        yield return null;
-        for (float ft = 1f; ft >= 0; ft -= 0.1f) 
-        {
-           // Color c = renderer.material.color;
-           // c.a = ft;
-           // renderer.material.color = c;
-           // yield return new WaitForSeconds(.1f);
-        }
-    }
 
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {

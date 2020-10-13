@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 6306594444877977467}
   - component: {fileID: 2091989307025602809}
   - component: {fileID: 4653212299372900206}
+  - component: {fileID: 5123088594276609837}
   m_Layer: 0
   m_Name: hexagon
   m_TagString: Cell_Floor
@@ -113,6 +114,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timeDestroy: 0.8
+--- !u!114 &5123088594276609837
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3119835081099862767}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f97e099b6d2636b439c97a6beccbd228, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  baseColor: {r: 1, g: 0.23137254, b: 0.9183826, a: 0}
+  endColor: {r: 1, g: 1, b: 1, a: 0}
+  timeDamping: 0
 --- !u!1 &6685102958373686546
 GameObject:
   m_ObjectHideFlags: 0
