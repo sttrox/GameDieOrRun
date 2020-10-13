@@ -36,14 +36,20 @@ public class ManagerCell : Singleton<ManagerCell>
     {
         for (;;)
         {
-            if (_queueDestroyCell.Count > 0)
-            {
-                S_Cell cell = null;
-                if (_queueDestroyCell.Dequeue()?.TryGetComponent(out cell) == true)
-                    cell.Activate();
-            }
-
+            ActivateCellFrom(_queueDestroyCell);
             yield return new WaitForSeconds(0.1f);
+        }
+    }
+
+    private void ActivateCellFrom(Queue<GameObject> queueCells)
+    {
+        if (queueCells.Count > 0)
+        {
+            Cell cell = null;
+            var go = queueCells.Dequeue();
+            if (go != null)
+                if (go.TryGetComponent(out cell) == true)
+                    cell.Activate();
         }
     }
 }
