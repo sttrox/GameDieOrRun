@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-public class S_Cell : MonoBehaviour
+public class Cell : MonoBehaviour
 {
     public float timeDestroy = 0.8f;
 
