@@ -18,6 +18,7 @@ public class PlayerController : MonoBehaviour
         anim = GetComponent<Animator>();
         characterController = GetComponent<CharacterController>();
     }
+
     //private  Queue<GameObject>
     void Update()
     {
@@ -49,8 +50,19 @@ public class PlayerController : MonoBehaviour
 
     void ControllPlayer()
     {
-        float moveHorizontal = Input.GetAxisRaw("Horizontal");
-        float moveVertical = Input.GetAxisRaw("Vertical");
+        float moveHorizontal;
+        float moveVertical;
+        var vectorDelta = InputManager.instance.joystick.delta;
+        if (vectorDelta == Vector2.zero)
+        {
+            moveHorizontal = Input.GetAxisRaw("Horizontal");
+            moveVertical = Input.GetAxisRaw("Vertical");
+        }
+        else
+        {
+            moveHorizontal = vectorDelta.x;
+            moveVertical = vectorDelta.y;
+        }
 
 
         Vector3 movement =
@@ -66,7 +78,7 @@ public class PlayerController : MonoBehaviour
             anim.SetInteger("Walk", 0);
         }
 
-        movement.y  = _gravityForce;
+        movement.y = _gravityForce;
         characterController.Move(movement);
 
 
