@@ -1,12 +1,14 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Color = UnityEngine.Color;
 
 public class ManagerMap : MonoBehaviour
 {
     //todo можно сделать метод для более явного создания вложенности дочерних GO 
 
-    public GameObject PrefabHexagon;
+    public GameObject prefabHexagon;
 
     //игровой объект где распололагаются уровни с секторами
     public GameObject Map;
@@ -18,8 +20,11 @@ public class ManagerMap : MonoBehaviour
     private SizeF _sizeHexagon;
 
 
-    private int sizeX = 10;
-    private int sizeY = 10;
+    private int countCellX = 10;
+    private int countCellY = 10;
+
+    private float SizeX => countCellX * _sizeHexagon.Width;
+    private float SizeY => countCellY * _sizeHexagon.Height;
 
     private readonly Color[] _paletteColor = new Color[]
     {
@@ -37,15 +42,18 @@ public class ManagerMap : MonoBehaviour
     private static Color CreateColor(int r, int g, int b)
         => new Color(255f / r, 255f / g, 255f / b);
 
-// Start is called before the first frame update
+    private void Awake()
+    {
+        var bounds = prefabHexagon.GetComponent<Renderer>().bounds;
+        _sizeHexagon = new SizeF(bounds.size.x, bounds.size.z);
+    }
+
+    // Start is called before the first frame update
     void Start()
     {
-        var bounds = PrefabHexagon.GetComponent<Renderer>().bounds;
-        _sizeHexagon = new SizeF(bounds.size.x, bounds.size.z);
-
         for (int i = 0; i < countLevels; i++)
         {
-            GenerateStorey(i, sizeX, sizeY, Map);
+            GenerateStorey(i, countCellX, countCellY, Map);
         }
     }
 
@@ -62,8 +70,26 @@ public class ManagerMap : MonoBehaviour
         {
             for (int y = 0; y < countY; y++)
             {
-                CreateCell(x, y, level, PrefabHexagon, levelGO);
+                CreateCell(x, y, level, prefabHexagon, levelGO);
             }
+        }
+    }
+
+    public void RespawnPlayers(GameObject[] players)
+    {
+        var sizeGrid = Mathf.Ceil(Mathf.Sqrt(players.Length));
+
+        var steepX = SizeX / sizeGrid;
+        var steepY = SizeY / sizeGrid;
+
+        for (int i = 0; i < players.Length; i++)
+        {
+            var x = (int) (i / sizeGrid);
+            var y = i % sizeGrid;
+            var cell = FactoryMethodCreateCell(prefabHexagon, new Vector3(x * steepX, 10, y * steepY), 0);
+            cell.name = $"Player X{x}Y{y}";
+            cell.transform.parent = this.Map.transform;
+            players[i].transform.position = cell.transform.position + Vector3.up * 2;
         }
     }
 

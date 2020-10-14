@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ManagerCell : Singleton<ManagerCell>
+public class ManagerLifeCells : Singleton<ManagerLifeCells>
 {
     private readonly Queue<GameObject> _queueDestroyCell = new Queue<GameObject>();
+
+    public bool isActivationCells = false;
 
     public void StepOn(ControllerColliderHit hit)
     {
@@ -36,8 +38,9 @@ public class ManagerCell : Singleton<ManagerCell>
     {
         for (;;)
         {
-            ActivateCellFrom(_queueDestroyCell);
-            yield return new WaitUntil(() => _queueDestroyCell.Count < 1);
+            if (isActivationCells)
+                ActivateCellFrom(_queueDestroyCell);
+            yield return new WaitUntil(() => _queueDestroyCell.Count != 0);
         }
     }
 
