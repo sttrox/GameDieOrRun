@@ -13,7 +13,7 @@ public abstract class Character : MonoBehaviour
 
     CharacterController characterController;
 
-    private float _gravityForce = -3.25f;
+    private float _gravityForce = -6.25f;
 
     // Start is called before the first frame update
     void Start()
@@ -54,8 +54,7 @@ public abstract class Character : MonoBehaviour
     private void ControlCharacter()
     {
         var inputData = GetInputParameters();
-
-
+        
         Vector3 movement =
             new Vector3(inputData.HorizontalInput * movementSpeed * 0.01f, 0f,
                 inputData.VerticalInput * movementSpeed * 0.01f);

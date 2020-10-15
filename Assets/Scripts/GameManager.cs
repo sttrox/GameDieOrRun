@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using Random = UnityEngine.Random;
 
 public class GameManager : MonoBehaviour
 {
@@ -11,9 +10,6 @@ public class GameManager : MonoBehaviour
     public GameObject camera;
 
     public int countNPC;
-    public Bounds boundsRespawn;
-
-    public float TimeToStart = 3f;
 
     private GameObject[] _screens;
 

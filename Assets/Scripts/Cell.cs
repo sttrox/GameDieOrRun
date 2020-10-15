@@ -14,7 +14,7 @@ public class Cell : MonoBehaviour
 
     public void Activate()
     {
-        Debug.Log(name + " Is Activated");
+        //Debug.Log(name + " Is Activated");
         StartDestroy();
     }
 

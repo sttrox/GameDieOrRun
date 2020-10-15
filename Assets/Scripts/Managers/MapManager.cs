@@ -1,7 +1,5 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Color = UnityEngine.Color;
 
 public class MapManager : MonoBehaviour
