@@ -6,6 +6,8 @@ using Color = UnityEngine.Color;
 
 public class ManagerMap : MonoBehaviour
 {
+    public EventOutOfSpace OutOfSpaceHasHappened;
+
     //todo можно сделать метод для более явного создания вложенности дочерних GO 
 
     public GameObject prefabHexagon;
@@ -13,12 +15,16 @@ public class ManagerMap : MonoBehaviour
     //игровой объект где распололагаются уровни с секторами
     public GameObject Map;
 
+    public GameObject ColliderOutBeyond;
+
     public int countLevels = 5;
     public float _heightFloor = -10f;
 
+    private BoxCollider _boxCollider;
+
     //Размер 6ти гранника для подмены размеров
     private SizeF _sizeHexagon;
-
+    private ControllerBeyondSpace _controllerBeyondSpace;
 
     private int countCellX = 10;
     private int countCellY = 10;
@@ -46,32 +52,37 @@ public class ManagerMap : MonoBehaviour
     {
         var bounds = prefabHexagon.GetComponent<Renderer>().bounds;
         _sizeHexagon = new SizeF(bounds.size.x, bounds.size.z);
+        _boxCollider = ColliderOutBeyond.GetComponent<BoxCollider>();
+        _controllerBeyondSpace = ColliderOutBeyond.GetComponent<ControllerBeyondSpace>();
     }
 
     // Start is called before the first frame update
     void Start()
     {
+        var posYCollider = -(((countLevels) * _heightFloor) - _heightFloor * 0.8f);
+        _boxCollider.transform.position = new Vector3(SizeX / 2f, posYCollider, SizeY / 2f);
+        _boxCollider.size = new Vector3(SizeX * 2f, 1, SizeY * 2);
+        _controllerBeyondSpace.TriggerEnterHasHappened += TriggerEnterChanged;
+
+        for (int i = 0; i < countLevels; i++)
+            GenerateStorey(i, countCellX, countCellY, Map);
+    }
+
+
+    void OnDrawGizmosSelected()
+    {
+        // Draw a semitransparent blue cube at the transforms position
         for (int i = 0; i < countLevels; i++)
         {
-            GenerateStorey(i, countCellX, countCellY, Map);
+            Gizmos.DrawCube(new Vector3(SizeX / 2f, i * -_heightFloor, SizeY / 2f), new Vector3(SizeX, 2, SizeY));
         }
     }
 
-    // Update is called once per frame
-    void Update()
+    public void RemoveMap()
     {
-    }
-
-    private void GenerateStorey(int level, int countX, int countY, GameObject map)
-    {
-        var levelGO = new GameObject("Level" + level);
-        levelGO.transform.parent = map.transform;
-        for (int x = 0; x < countX; x++)
+        for (int i = 0; i < Map.transform.childCount; i++)
         {
-            for (int y = 0; y < countY; y++)
-            {
-                CreateCell(x, y, level, prefabHexagon, levelGO);
-            }
+            Destroy(Map.transform.GetChild(i).gameObject);
         }
     }
 
@@ -96,7 +107,7 @@ public class ManagerMap : MonoBehaviour
     private void CreateCell(float indexX, float indexY, int level, GameObject prefab, GameObject levelObject)
     {
         /*
-         * X /|\
+         * Y /|\
          *    | X • X
          *    | • X •
          *    | X • X
@@ -128,4 +139,24 @@ public class ManagerMap : MonoBehaviour
         colorController.baseColor = _paletteColor[level];
         return instance;
     }
+
+    private void GenerateStorey(int level, int countX, int countY, GameObject map)
+    {
+        var levelGO = new GameObject("Level" + level);
+        levelGO.transform.parent = map.transform;
+        for (int x = 0; x < countX; x++)
+        {
+            for (int y = 0; y < countY; y++)
+            {
+                CreateCell(x, y, level, prefabHexagon, levelGO);
+            }
+        }
+    }
+
+    private void TriggerEnterChanged(Collider collider)
+    {
+        OutOfSpaceHasHappened?.Invoke(collider);
+    }
 }
+
+public delegate void EventOutOfSpace(Collider collider);

@@ -13,7 +13,7 @@ public abstract class Character : MonoBehaviour
 
     CharacterController characterController;
 
-    private float _gravityForce = -1.8f;
+    private float _gravityForce = -3.25f;
 
     // Start is called before the first frame update
     void Start()
@@ -39,7 +39,6 @@ public abstract class Character : MonoBehaviour
 
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
-        _gravityForce = !characterController.isGrounded ? -9.8f * Time.deltaTime : -9.8f;
         if (characterController.isGrounded)
         {
             ManagerLifeCells.instance.StepOn(hit);
@@ -52,13 +51,14 @@ public abstract class Character : MonoBehaviour
 
     protected abstract InputDataDto GetInputParameters();
 
-    private  void ControlCharacter()
+    private void ControlCharacter()
     {
         var inputData = GetInputParameters();
-        
+
 
         Vector3 movement =
-            new Vector3(inputData.HorizontalInput * movementSpeed * 0.01f, 0f, inputData.VerticalInput * movementSpeed * 0.01f);
+            new Vector3(inputData.HorizontalInput * movementSpeed * 0.01f, 0f,
+                inputData.VerticalInput * movementSpeed * 0.01f);
 
         if (movement != Vector3.zero)
         {
@@ -70,7 +70,7 @@ public abstract class Character : MonoBehaviour
             anim.SetInteger("Walk", 0);
         }
 
-        movement.y = _gravityForce;
+        movement.y = _gravityForce * Time.deltaTime;
         characterController.Move(movement);
 
 

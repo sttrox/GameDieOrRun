@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using UnityEngine;
+﻿using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class GameManager : MonoBehaviour
@@ -26,6 +24,8 @@ public class GameManager : MonoBehaviour
 
     private CameraFollow _cameraFollow;
 
+    private GameObject[] _players;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -42,14 +42,22 @@ public class GameManager : MonoBehaviour
 
             _managerLifeCells = managers.GetComponent<ManagerLifeCells>();
             _managerMap = managers.GetComponent<ManagerMap>();
-
+            _managerMap.OutOfSpaceHasHappened += OutOfSpaceChange;
             _cameraFollow = camera.GetComponent<CameraFollow>();
         }
     }
 
-    // Update is called once per frame
-    void Update()
+    private void OutOfSpaceChange(Collider collider)
     {
+        if (collider.gameObject.CompareTag("Player"))
+        {
+            GameOver();
+            Destroy(collider.gameObject);
+        }
+        else if (!collider.gameObject.CompareTag("NPC"))
+            return;
+
+        Destroy(collider.gameObject);
     }
 
     private void ShowScreen(ScreenUI screenUI)
@@ -80,19 +88,33 @@ public class GameManager : MonoBehaviour
     {
         _managerLifeCells.isActivationCells = true;
         ShowScreen(ScreenUI.InGame);
+        for (var i = 0; i < _players.Length; i++)
+        {
+            _players[i].SetActive(true);
+        }
     }
 
     public void GameOver()
     {
+        _managerMap.RemoveMap();
+        for (var i = 0; i < _players.Length; i++)
+        {
+            Destroy(_players[i]);
+        }
+
         ShowScreen(ScreenUI.MainMenu);
     }
 
     private void InitializedGame()
     {
         GameObject player;
-        var arrPlayers = InitializedPlayers(countNPC, out player);
+        _players = InitializedPlayers(countNPC, out player);
         _cameraFollow.target = player.transform;
-        _managerMap.RespawnPlayers(arrPlayers);
+        _managerMap.RespawnPlayers(_players);
+        for (var i = 0; i < _players.Length; i++)
+        {
+            _players[i].SetActive(_players[i].CompareTag("Player"));
+        }
     }
 
     private GameObject[] InitializedPlayers(int countNPC, out GameObject playerInstance)
