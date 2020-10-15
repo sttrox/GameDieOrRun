@@ -1,88 +1,52 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class VirtualJoystick : MonoBehaviour,
     IBeginDragHandler, IDragHandler, IEndDragHandler
 {
-		// Спрайт, перемещаемый по экрану
-    public RectTransform thumb;
+    public Vector2 sizePanel;
 
-		// Местоположение пальца и джойстика, когда
-		// происходит перемещение
+    // Местоположение пальца, когда происходит перемещение
     private Vector2 originalPosition;
 
-    private Vector2 originalThumbPosition;
+    private Vector2 startPositionFinger;
 
-		// Расстояние, на которое сместился палец относительно
-		// исходного местоположения
+    // Расстояние, на которое сместился палец относительно
+    // исходного местоположения
     public Vector2 delta;
 
     void Start()
     {
-				// В момент запуска запомнить исходные
-				// координаты
+        // В момент запуска запомнить исходные
+        // координаты
         originalPosition
             = this.GetComponent<RectTransform>().localPosition;
-        originalThumbPosition = thumb.localPosition;
-				// Выключить площадку, сделав ее невидимой
-        thumb.gameObject.SetActive(false);
-				// Сбросить величину смещения в ноль
+        // Сбросить величину смещения в ноль
         delta = Vector2.zero;
     }
 
-		// Вызывается, когда начинается перемещение
+    // Вызывается, когда начинается перемещение
     public void OnBeginDrag(PointerEventData eventData)
     {
-				// Сделать площадку видимой
-        thumb.gameObject.SetActive(true);
-				// Зафиксировать мировые координаты, откуда начато перемещение
-        Vector3 worldPoint = new Vector3();
-        RectTransformUtility.ScreenPointToWorldPointInRectangle(
-            this.transform as RectTransform,
-            eventData.position,
-            eventData.enterEventCamera,
-            out worldPoint);
-				// Поместить джойстик в эту позицию
-        //this.GetComponent<RectTransform>().position
-        thumb.position
-            = worldPoint;
-				// Поместить площадку в исходную позицию
-				// относительно джойстика
-        thumb.localPosition = originalThumbPosition;
+        startPositionFinger = eventData.position;
     }
 
-		// Вызывается в ходе перемещения
+    // Вызывается в ходе перемещения
     public void OnDrag(PointerEventData eventData)
     {
-				// Определить текущие мировые координаты точки контакта пальца с экраном
-        Vector3 worldPoint = new Vector3();
-        RectTransformUtility.ScreenPointToWorldPointInRectangle(
-            this.transform as RectTransform,
-            eventData.position,
-            eventData.enterEventCamera,
-            out worldPoint);
-				// Поместить площадку в эту точку
-        thumb.position = worldPoint;
-				// Вычислить смещение от исходной позиции
-        var size = GetComponent<RectTransform>().rect.size;
-        delta = thumb.localPosition;
-        delta.x = (delta.x - (size.x / 2.0f)) / (size.x / 2.0f);
-        delta.y = (delta.y - (size.y / 2.0f)) / (size.y / 2.0f);
-        delta.x = Mathf.Clamp(delta.x, -1.0f, 1.0f);
-        delta.y = Mathf.Clamp(delta.y, -1.0f, 1.0f);
+        var positionNow = eventData.position;
+        var offset = startPositionFinger - positionNow;
+
+        // Вычислить смещение от исходной позиции
+        var x = Mathf.Clamp((offset.x) / (sizePanel.x / 2f), -1f, 1f);
+        var y = Mathf.Clamp((offset.y) / (sizePanel.y / 2f), -1f, 1f);
+        delta = new Vector2(-x, -y);
     }
 
-		// Вызывается по окончании перемещения
+    // Вызывается по окончании перемещения
     public void OnEndDrag(PointerEventData eventData)
     {
-				// Сбросить позицию джойстика
-        this.GetComponent<RectTransform>().localPosition
-            = originalPosition;
-				// Сбросить величину смещения в ноль
+        // Сбросить величину смещения в ноль
         delta = Vector2.zero;
-				// Скрыть площадку
-        thumb.gameObject.SetActive(false);
     }
 }
