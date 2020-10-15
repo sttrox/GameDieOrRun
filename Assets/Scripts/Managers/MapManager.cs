@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using Color = UnityEngine.Color;
 
-public class ManagerMap : MonoBehaviour
+public class MapManager : MonoBehaviour
 {
     public EventOutOfSpace OutOfSpaceHasHappened;
 
@@ -86,22 +86,27 @@ public class ManagerMap : MonoBehaviour
         }
     }
 
-    public void RespawnPlayers(GameObject[] players)
+    public Vector3[] SpawnCells(int count)
     {
-        var sizeGrid = Mathf.Ceil(Mathf.Sqrt(players.Length));
+        var positionsSpawn = new Vector3[count];
+
+        var sizeGrid = Mathf.Ceil(Mathf.Sqrt(count));
 
         var steepX = SizeX / sizeGrid;
         var steepY = SizeY / sizeGrid;
 
-        for (int i = 0; i < players.Length; i++)
+        for (int i = 0; i < count; i++)
         {
             var x = (int) (i / sizeGrid);
             var y = i % sizeGrid;
-            var cell = FactoryMethodCreateCell(prefabHexagon, new Vector3(x * steepX, 10, y * steepY), 0);
+            var position = new Vector3(x * steepX, 10, y * steepY);
+            var cell = FactoryMethodCreateCell(prefabHexagon, position, 0);
             cell.name = $"Player X{x}Y{y}";
             cell.transform.parent = this.Map.transform;
-            players[i].transform.position = cell.transform.position + Vector3.up * 2;
+            positionsSpawn[i] = position;
         }
+
+        return positionsSpawn;
     }
 
     private void CreateCell(float indexX, float indexY, int level, GameObject prefab, GameObject levelObject)

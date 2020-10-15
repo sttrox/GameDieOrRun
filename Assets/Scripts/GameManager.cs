@@ -6,8 +6,6 @@ public class GameManager : MonoBehaviour
     public GameObject mainMenuUI;
     public GameObject inGameUI;
 
-    public GameObject prefabPlayer;
-    public GameObject prefabNPC;
     public GameObject managers;
 
     public GameObject camera;
@@ -19,12 +17,11 @@ public class GameManager : MonoBehaviour
 
     private GameObject[] _screens;
 
-    private ManagerMap _managerMap;
+    private MapManager _mapManager;
     private LifeCellsManager _lifeCellsManager;
+    private CharactersManager _charactersManager;
 
     private CameraFollow _cameraFollow;
-
-    private GameObject[] _players;
 
     // Start is called before the first frame update
     void Start()
@@ -40,10 +37,12 @@ public class GameManager : MonoBehaviour
                 inGameUI, mainMenuUI
             };
 
-            _managerMap = managers.GetComponent<ManagerMap>();
-            _managerMap.OutOfSpaceHasHappened += OutOfSpaceChange;
             _lifeCellsManager = managers.GetComponent<LifeCellsManager>();
+            _mapManager = managers.GetComponent<MapManager>();
+            _charactersManager = managers.GetComponent<CharactersManager>();
             _cameraFollow = camera.GetComponent<CameraFollow>();
+            
+            _mapManager.OutOfSpaceHasHappened += OutOfSpaceChange;
         }
     }
 
@@ -88,49 +87,25 @@ public class GameManager : MonoBehaviour
     {
         _lifeCellsManager.isActivationCells = true;
         ShowScreen(ScreenUI.InGame);
-        for (var i = 0; i < _players.Length; i++)
-        {
-            _players[i].SetActive(true);
-        }
+        _charactersManager.EnableAllCharacter();
     }
 
     public void GameOver()
     {
-        _managerMap.RemoveMap();
-        for (var i = 0; i < _players.Length; i++)
-        {
-            Destroy(_players[i]);
-        }
+        _mapManager.RemoveMap();
+        _charactersManager.DestroyAllCharacter();
 
         ShowScreen(ScreenUI.MainMenu);
     }
 
     private void InitializedGame()
     {
-        GameObject player;
-        _players = InitializedPlayers(countNPC, out player);
-        _cameraFollow.target = player.transform;
-        _managerMap.RespawnPlayers(_players);
-        for (var i = 0; i < _players.Length; i++)
-        {
-            _players[i].SetActive(_players[i].CompareTag("Player"));
-        }
+        var positionCells = _mapManager.SpawnCells(countNPC + 1);
+        _charactersManager.InitializedCharacters(positionCells);
+        _charactersManager.EnableOnlyPlayer();
+        _cameraFollow.target = _charactersManager.Player.transform;
     }
 
-    private GameObject[] InitializedPlayers(int countNPC, out GameObject playerInstance)
-    {
-        GameObject[] players = new GameObject[countNPC + 1];
-        var indexPlayer = Random.Range(0, countNPC + 1);
-        playerInstance = Instantiate(prefabPlayer);
-        for (int i = 0; i < players.Length; i++)
-        {
-            GameObject player = i == indexPlayer ? playerInstance : Instantiate(prefabNPC);
-
-            players[i] = player;
-        }
-
-        return players;
-    }
 
     private enum ScreenUI
     {
