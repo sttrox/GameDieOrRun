@@ -41,7 +41,7 @@ public class GameManager : MonoBehaviour
             _mapManager = managers.GetComponent<MapManager>();
             _charactersManager = managers.GetComponent<CharactersManager>();
             _cameraFollow = camera.GetComponent<CameraFollow>();
-            
+
             _mapManager.OutOfSpaceHasHappened += OutOfSpaceChange;
         }
     }
@@ -100,6 +100,7 @@ public class GameManager : MonoBehaviour
 
     private void InitializedGame()
     {
+        _mapManager.SpawnMap();
         var positionCells = _mapManager.SpawnCells(countNPC + 1);
         _charactersManager.InitializedCharacters(positionCells);
         _charactersManager.EnableOnlyPlayer();

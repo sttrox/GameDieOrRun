@@ -63,9 +63,6 @@ public class MapManager : MonoBehaviour
         _boxCollider.transform.position = new Vector3(SizeX / 2f, posYCollider, SizeY / 2f);
         _boxCollider.size = new Vector3(SizeX * 2f, 1, SizeY * 2);
         _controllerBeyondSpace.TriggerEnterHasHappened += TriggerEnterChanged;
-
-        for (int i = 0; i < countLevels; i++)
-            GenerateStorey(i, countCellX, countCellY, Map);
     }
 
 
@@ -76,6 +73,12 @@ public class MapManager : MonoBehaviour
         {
             Gizmos.DrawCube(new Vector3(SizeX / 2f, i * -_heightFloor, SizeY / 2f), new Vector3(SizeX, 2, SizeY));
         }
+    }
+
+    public void SpawnMap()
+    {
+        for (int i = 0; i < countLevels; i++)
+            GenerateStorey(i, countCellX, countCellY, Map);
     }
 
     public void RemoveMap()

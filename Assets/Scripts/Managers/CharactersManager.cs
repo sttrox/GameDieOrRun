@@ -31,11 +31,14 @@ public class CharactersManager : MonoBehaviour
 
         _players = new GameObject[positions.Length];
         var indexPlayer = Random.Range(0, positions.Length);
-        _playerInstance = Instantiate(prefabPlayer);
+        _playerInstance = Instantiate(prefabPlayer, positions[indexPlayer], Quaternion.identity);
+
         for (int i = 0; i < positions.Length; i++)
         {
-            GameObject player = i == indexPlayer ? _playerInstance : Instantiate(prefabNPC);
-            player.transform.position = positions[i];
+            GameObject player = i == indexPlayer
+                ? _playerInstance
+                : Instantiate(prefabNPC, positions[i], Quaternion.identity);
+            player.transform.parent = containerCharacters.transform;
             _players[i] = player;
         }
     }
@@ -47,6 +50,8 @@ public class CharactersManager : MonoBehaviour
         {
             Destroy(_players[i]);
         }
+
+        Destroy(_playerInstance);
     }
 
     public void EnableOnlyPlayer()
