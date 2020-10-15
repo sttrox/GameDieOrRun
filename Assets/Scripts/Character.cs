@@ -41,7 +41,7 @@ public abstract class Character : MonoBehaviour
     {
         if (characterController.isGrounded)
         {
-            ManagerLifeCells.instance.StepOn(hit);
+            LifeCellsManager.instance.StepOn(hit);
             //hit.gameObject.BroadcastMessage("StepOn", SendMessageOptions.RequireReceiver);
         }
         else

@@ -20,7 +20,7 @@ public class GameManager : MonoBehaviour
     private GameObject[] _screens;
 
     private ManagerMap _managerMap;
-    private ManagerLifeCells _managerLifeCells;
+    private LifeCellsManager _lifeCellsManager;
 
     private CameraFollow _cameraFollow;
 
@@ -40,9 +40,9 @@ public class GameManager : MonoBehaviour
                 inGameUI, mainMenuUI
             };
 
-            _managerLifeCells = managers.GetComponent<ManagerLifeCells>();
             _managerMap = managers.GetComponent<ManagerMap>();
             _managerMap.OutOfSpaceHasHappened += OutOfSpaceChange;
+            _lifeCellsManager = managers.GetComponent<LifeCellsManager>();
             _cameraFollow = camera.GetComponent<CameraFollow>();
         }
     }
@@ -80,13 +80,13 @@ public class GameManager : MonoBehaviour
     private void ShowMainMenu()
     {
         mainMenuUI.SetActive(true);
-        _managerLifeCells.isActivationCells = false;
+        _lifeCellsManager.isActivationCells = false;
         InitializedGame();
     }
 
     public void StartNewGame()
     {
-        _managerLifeCells.isActivationCells = true;
+        _lifeCellsManager.isActivationCells = true;
         ShowScreen(ScreenUI.InGame);
         for (var i = 0; i < _players.Length; i++)
         {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ManagerLifeCells : Singleton<ManagerLifeCells>
+public class LifeCellsManager : Singleton<LifeCellsManager>
 {
     private readonly Queue<GameObject> _queueDestroyCell = new Queue<GameObject>();
 
