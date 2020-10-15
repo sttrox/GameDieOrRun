@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class VirtualJoystick : MonoBehaviour,
@@ -24,7 +25,11 @@ public class VirtualJoystick : MonoBehaviour,
         // Сбросить величину смещения в ноль
         delta = Vector2.zero;
     }
-
+    private void OnDisable()
+    {
+        delta = Vector2.zero;
+    }
+    
     // Вызывается, когда начинается перемещение
     public void OnBeginDrag(PointerEventData eventData)
     {
