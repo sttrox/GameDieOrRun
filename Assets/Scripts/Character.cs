@@ -11,6 +11,7 @@ public abstract class Character : MonoBehaviour
 
     Animator anim;
 
+    //TODO v.shimkovich: CC requires no rigidbody but to detect collisions you need rigidbody on every hexagon which is worse
     CharacterController characterController;
 
     private float _gravityForce = -6.25f;

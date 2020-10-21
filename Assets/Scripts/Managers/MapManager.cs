@@ -21,6 +21,7 @@ public class MapManager : MonoBehaviour
     private BoxCollider _boxCollider;
 
     //Размер 6ти гранника для подмены размеров
+    //TODO v.shimkovich: Vector2 is common unity struct for such purpose widely supported by other apis
     private SizeF _sizeHexagon;
     private ControllerBeyondSpace _controllerBeyondSpace;
 

@@ -37,6 +37,7 @@ public class ControllerColor : MonoBehaviour
 
     public void ActivateDamping()
     {
+        //TODO v.shimkovich: you can set return type to IEnumerator
         StartCoroutine(ProcessingGradientColor().GetEnumerator());
     }
 
@@ -51,6 +52,7 @@ public class ControllerColor : MonoBehaviour
             yield return null;
         } while (_tempTimeDamping <= timeDamping);
 
+        //TODO v.shimkovich: redundant
         yield break;
     }
 

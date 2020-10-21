@@ -2,6 +2,7 @@
 
 public class GameManager : MonoBehaviour
 {
+    //TODO v.shimkovich: use private fields with [SerializedField] attribute for private fields whih need to be editor-visible
     public GameObject mainMenuUI;
     public GameObject inGameUI;
 
@@ -33,6 +34,7 @@ public class GameManager : MonoBehaviour
                 inGameUI, mainMenuUI
             };
 
+            //TODO v.shimkovich: можно делать ссылку сразу на компоненты в инспекторе
             _lifeCellsManager = managers.GetComponent<LifeCellsManager>();
             _mapManager = managers.GetComponent<MapManager>();
             _charactersManager = managers.GetComponent<CharactersManager>();
@@ -79,6 +81,7 @@ public class GameManager : MonoBehaviour
         InitializedGame();
     }
 
+    //TODO v.shimkovich: prefer button click subscription with code rather than in the editor
     public void StartNewGame()
     {
         _lifeCellsManager.isActivationCells = true;
